@@ -146,21 +146,22 @@
         const container = document.getElementById('status-container');
 
         // Dynamic Status UI Mapping
-        if (liveStatus.toLowerCase() === 'busy') {
-          container.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-              <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>Busy
-            </span>
-            <p class="text-xs text-red-600 mt-1 font-semibold"><i class="fa-regular fa-clock mr-1"></i>${liveWaitTime}</p>
-          `;
-        } else {
-          container.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-              <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>Not Busy
-            </span>
-            <p class="text-xs text-green-600 mt-1 font-semibold"><i class="fa-regular fa-clock mr-1"></i>${liveWaitTime}</p>
-          `;
-        }
+if (liveStatus.toLowerCase() === 'busy') {
+  container.innerHTML = `
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+      <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>Busy
+    </span>
+    <p class="text-xs text-red-600 mt-1 font-semibold"><i class="fa-regular fa-clock mr-1"></i>${liveWaitTime}</p>
+  `;
+} else {
+  // This now dynamically prints "Less Busy" (or whatever you typed in the sheet)
+  container.innerHTML = `
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+      <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>${liveStatus}
+    </span>
+    <p class="text-xs text-green-600 mt-1 font-semibold"><i class="fa-regular fa-clock mr-1"></i>${liveWaitTime}</p>
+  `;
+}
 
         // Dynamic Announcement Text Insertion
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
