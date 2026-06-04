@@ -33,6 +33,7 @@
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
             </div>
+            <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
           </div>
         </div>
       </div>
@@ -90,14 +91,11 @@
   </style>
 
   <script>
-    // System automatically generates client-side current date
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
-    // Integrated Live Published Google Sheet CSV Link Endpoint
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLnd2OK3OrSVmRuFeD2bbItXkODt4ed49NHDWt0hc5gI_ubC_uFvGbZHe5qisH12mkwInYH5FJf90F/pub?output=csv';
 
-    // Standard Comma-Separated Values Text Matrix Parser
     function parseCSV(text) {
       let p = '', r = [];
       let q = false;
@@ -123,16 +121,16 @@
       const doctorAvailability = document.getElementById('doctor-availability');
       const emergencyContainer = document.getElementById('emergency-container');
       const appointmentWrapper = document.getElementById('appointment-action-wrapper');
+      const lastUpdatedElement = document.getElementById('last-updated');
       
       const now = new Date();
-      const currentDay = now.getDay(); // 0 = Sunday, 2 = Tuesday
+      const currentDay = now.getDay(); 
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
       const totalMinutesToday = (currentHour * 60) + currentMinute;
 
-      // 🕒 SYSTEM TIME THRESHOLDS CONFIGURATION
-      const lunchStart = 13 * 60;       // 1:00 PM
-      const lunchEnd = (14 * 60) + 30;  // 2:30 PM
+      const lunchStart = 13 * 60;       
+      const lunchEnd = (14 * 60) + 30;  
 
       // OVERRIDE RULE 1: CLINIC CLOSED DAYS (Tuesday [2] or Sunday [0])
       if (currentDay === 0 || currentDay === 2) {
@@ -143,6 +141,7 @@
           <p class="text-xs text-gray-500 mt-1 font-semibold">Clinic Off-Day</p>
         `;
         doctorAvailability.innerText = "Clinic Closed Today";
+        lastUpdatedElement.innerText = "";
         emergencyContainer.innerHTML = `
           <div class="flex items-center justify-between p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl">
             <span class="text-sm font-medium flex items-center"><i class="fa-solid fa-ban text-gray-400 mr-2"></i> Emergency Services</span>
@@ -154,7 +153,7 @@
             Appointments Disabled Today
           </div>
         `;
-        fetchBackupDataOnly(true); // Pull announcement, skip status
+        fetchBackupDataOnly(true); 
         return;
       }
 
@@ -166,11 +165,12 @@
           </span>
           <p class="text-xs text-amber-600 mt-1 font-semibold">Resuming at 2:30 PM</p>
         `;
-        fetchBackupDataOnly(false); // Dynamically update doctor profile, emergency, notice string
+        lastUpdatedElement.innerText = "";
+        fetchBackupDataOnly(false); 
         return;
       }
 
-      // ROUTINE PIPELINE OPERATION (Runs outside of time rules)
+      // ROUTINE PIPELINE OPERATION
       try {
         const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&t=${new Date().getTime()}`);
         const csvRawText = await response.text();
@@ -181,6 +181,7 @@
         const liveAnnouncement = parsedRows[1][2].trim();
         const liveDocAvail = parsedRows[1][3].trim();
         const liveEmergency = parsedRows[1][4].trim();
+        const liveLastUpdated = parsedRows[1][5] ? parsedRows[1][5].trim() : '';
 
         // A. Render 4-Tier Fluid Clinic Status Card
         if (liveStatus.toLowerCase() === 'emergency priority') {
@@ -204,7 +205,7 @@
             </span>
             <p class="text-xs text-yellow-700 mt-1 font-bold">${liveWaitTime}</p>
           `;
-        } else { // Tier 1 Default: 'Available'
+        } else { 
           container.innerHTML = `
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
               <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>Available
@@ -213,10 +214,17 @@
           `;
         }
 
-        // B. Populate Doctor Availability Element Data Row
+        // B. Inject Last Updated Timestamp Text String
+        if (liveLastUpdated) {
+          lastUpdatedElement.innerText = `Updated: ${liveLastUpdated}`;
+        } else {
+          lastUpdatedElement.innerText = "";
+        }
+
+        // C. Populate Doctor Availability Element Data Row
         doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Duty / Active";
 
-        // C. Update Emergency Service Box Layout Configuration
+        // D. Update Emergency Service Box Layout Configuration
         if (liveEmergency.toLowerCase() === 'available') {
           emergencyContainer.innerHTML = `
             <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 text-red-900 rounded-xl">
@@ -241,7 +249,6 @@
           `;
         }
 
-        // D. Update Running Announcement Marquee Text Track
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
 
       } catch (err) {
@@ -250,7 +257,6 @@
       }
     }
 
-    // Secondary backup loader processes peripheral context cleanly during schedule breaks
     async function fetchBackupDataOnly(offDayMode) {
       try {
         const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&t=${new Date().getTime()}`);
@@ -284,7 +290,6 @@
       } catch(e) {}
     }
 
-    // Execute application stack mapping pipelines
     evaluateClinicPipeline();
   </script>
 </body>
