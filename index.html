@@ -60,11 +60,13 @@
         </div>
       </div>
 
-      <a href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
-         target="_blank" 
-         class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-6 rounded-2xl shadow-md transition duration-200 transform active:scale-95 mb-5">
-        <i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book an Appointment
-      </a>
+      <div id="appointment-action-wrapper">
+        <a href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
+           target="_blank" 
+           class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-6 rounded-2xl shadow-md transition duration-200 transform active:scale-95 mb-5">
+          <i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book an Appointment
+        </a>
+      </div>
 
       <div class="text-center">
         <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">
@@ -92,10 +94,10 @@
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
-    // PASTE YOUR RE-PUBLISHED GOOGLE SHEET CSV LINK BELOW:
+    // Integrated Live Published Google Sheet CSV Link Endpoint
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLnd2OK3OrSVmRuFeD2bbItXkODt4ed49NHDWt0hc5gI_ubC_uFvGbZHe5qisH12mkwInYH5FJf90F/pub?output=csv';
 
-    // CSV Parser supporting quotes and commas
+    // Standard Comma-Separated Values Text Matrix Parser
     function parseCSV(text) {
       let p = '', r = [];
       let q = false;
@@ -116,55 +118,113 @@
       return r;
     }
 
-    async function updateLiveWebsiteElements() {
-      if (GOOGLE_SHEET_CSV_URL === 'YOUR_PUBLISHED_GOOGLE_SHEET_CSV_LINK_HERE') {
-        document.getElementById('announcement-text').innerHTML = "⚙️ Setup required: Please insert your Google Sheet CSV URL into the code.";
+    async function evaluateClinicPipeline() {
+      const container = document.getElementById('status-container');
+      const doctorAvailability = document.getElementById('doctor-availability');
+      const emergencyContainer = document.getElementById('emergency-container');
+      const appointmentWrapper = document.getElementById('appointment-action-wrapper');
+      
+      const now = new Date();
+      const currentDay = now.getDay(); // 0 = Sunday, 2 = Tuesday
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+      const totalMinutesToday = (currentHour * 60) + currentMinute;
+
+      // 🕒 SYSTEM TIME THRESHOLDS CONFIGURATION
+      const lunchStart = 13 * 60;       // 1:00 PM
+      const lunchEnd = (14 * 60) + 30;  // 2:30 PM
+
+      // OVERRIDE RULE 1: CLINIC CLOSED DAYS (Tuesday [2] or Sunday [0])
+      if (currentDay === 0 || currentDay === 2) {
+        container.innerHTML = `
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300">
+            <i class="fa-solid fa-door-closed mr-1.5 text-xs"></i>Closed
+          </span>
+          <p class="text-xs text-gray-500 mt-1 font-semibold">Clinic Off-Day</p>
+        `;
+        doctorAvailability.innerText = "Clinic Closed Today";
+        emergencyContainer.innerHTML = `
+          <div class="flex items-center justify-between p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl">
+            <span class="text-sm font-medium flex items-center"><i class="fa-solid fa-ban text-gray-400 mr-2"></i> Emergency Services</span>
+            <span class="text-xs font-semibold bg-gray-300 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">Unavailable</span>
+          </div>
+        `;
+        appointmentWrapper.innerHTML = `
+          <div class="block w-full text-center bg-gray-300 text-gray-600 font-bold py-4 px-6 rounded-2xl cursor-not-allowed shadow-inner mb-5">
+            Appointments Disabled Today
+          </div>
+        `;
+        fetchBackupDataOnly(true); // Pull announcement, skip status
         return;
       }
 
+      // OVERRIDE RULE 2: DAILY LUNCH BREAK OVERRIDE (1:00 PM - 2:30 PM)
+      if (totalMinutesToday >= lunchStart && totalMinutesToday < lunchEnd) {
+        container.innerHTML = `
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800 border border-amber-200">
+            <i class="fa-solid fa-utensils mr-1.5 text-xs"></i>Lunch Break
+          </span>
+          <p class="text-xs text-amber-600 mt-1 font-semibold">Resuming at 2:30 PM</p>
+        `;
+        fetchBackupDataOnly(false); // Dynamically update doctor profile, emergency, notice string
+        return;
+      }
+
+      // ROUTINE PIPELINE OPERATION (Runs outside of time rules)
       try {
         const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&t=${new Date().getTime()}`);
         const csvRawText = await response.text();
         const parsedRows = parseCSV(csvRawText);
         
-        // Data Extraction from Sheet Row 2 (Index 1)
         const liveStatus = parsedRows[1][0].trim();
         const liveWaitTime = parsedRows[1][1].trim();
         const liveAnnouncement = parsedRows[1][2].trim();
         const liveDocAvail = parsedRows[1][3].trim();
         const liveEmergency = parsedRows[1][4].trim();
 
-        // 1. Update Clinic Status UI Badge
-        const statusContainer = document.getElementById('status-container');
-        if (liveStatus.toLowerCase() === 'busy') {
-          statusContainer.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-              <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>Busy
+        // A. Render 4-Tier Fluid Clinic Status Card
+        if (liveStatus.toLowerCase() === 'emergency priority') {
+          container.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-600 text-white animate-pulse">
+              <i class="fa-solid fa-triangle-exclamation mr-1.5 animate-bounce"></i>Critical Priority
             </span>
-            <p class="text-xs text-red-600 mt-1 font-semibold"><i class="fa-regular fa-clock mr-1"></i>${liveWaitTime}</p>
+            <p class="text-xs text-red-600 mt-1 font-bold">${liveWaitTime}</p>
           `;
-        } else {
-          statusContainer.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-              <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>${liveStatus}
+        } else if (liveStatus.toLowerCase() === 'peak volume') {
+          container.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-500 text-white">
+              <span class="w-2 h-2 bg-white rounded-full mr-2"></span>Peak Volume
             </span>
-            <p class="text-xs text-green-600 mt-1 font-semibold"><i class="fa-regular fa-clock mr-1"></i>${liveWaitTime}</p>
+            <p class="text-xs text-amber-600 mt-1 font-bold">${liveWaitTime}</p>
+          `;
+        } else if (liveStatus.toLowerCase() === 'moderate') {
+          container.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+              <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>Moderate Flow
+            </span>
+            <p class="text-xs text-yellow-700 mt-1 font-bold">${liveWaitTime}</p>
+          `;
+        } else { // Tier 1 Default: 'Available'
+          container.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+              <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>Available
+            </span>
+            <p class="text-xs text-green-600 mt-1 font-bold">${liveWaitTime}</p>
           `;
         }
 
-        // 2. Update Doctor Availability
-        document.getElementById('doctor-availability').innerText = liveDocAvail;
+        // B. Populate Doctor Availability Element Data Row
+        doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Duty / Active";
 
-        // 3. Update Emergency Service Box State
-        const emergencyContainer = document.getElementById('emergency-container');
+        // C. Update Emergency Service Box Layout Configuration
         if (liveEmergency.toLowerCase() === 'available') {
           emergencyContainer.innerHTML = `
             <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 text-red-900 rounded-xl">
-              <span class="text-sm font-bold flex items-center uppercase tracking-wide">
-                <i class="fa-solid fa-kit-medical text-red-600 mr-2 text-base animate-bounce"></i> Emergency Services
+              <span class="text-sm font-bold flex items-center uppercase tracking-wide text-red-800">
+                <i class="fa-solid fa-kit-medical text-red-600 mr-2 text-base animate-bounce"></i> Emergency Cases
               </span>
               <span class="text-xs font-extrabold bg-red-600 text-white px-2 py-1 rounded-md uppercase tracking-wider">
-                Open / Ready
+                Open & Ready
               </span>
             </div>
           `;
@@ -181,16 +241,51 @@
           `;
         }
 
-        // 4. Update Announcement text
+        // D. Update Running Announcement Marquee Text Track
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
 
       } catch (err) {
-        console.error('Data pipeline connection issue:', err);
-        document.getElementById('status-container').innerHTML = '<span class="text-xs text-gray-400">Offline</span>';
+        console.error('Data pipeline loading exception:', err);
+        container.innerHTML = '<span class="text-xs text-gray-400">Offline</span>';
       }
     }
 
-    updateLiveWebsiteElements();
+    // Secondary backup loader processes peripheral context cleanly during schedule breaks
+    async function fetchBackupDataOnly(offDayMode) {
+      try {
+        const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&t=${new Date().getTime()}`);
+        const csvRawText = await response.text();
+        const parsedRows = parseCSV(csvRawText);
+        
+        const liveAnnouncement = parsedRows[1][2].trim();
+        document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
+        
+        if (!offDayMode) {
+          const liveDocAvail = parsedRows[1][3].trim();
+          const liveEmergency = parsedRows[1][4].trim();
+          
+          document.getElementById('doctor-availability').innerText = liveDocAvail ? liveDocAvail : "On Lunch Break";
+          
+          const emergencyContainer = document.getElementById('emergency-container');
+          if (liveEmergency.toLowerCase() === 'available') {
+            emergencyContainer.innerHTML = `
+              <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 text-red-900 rounded-xl">
+                <span class="text-sm font-bold flex items-center uppercase tracking-wide text-red-800"><i class="fa-solid fa-kit-medical text-red-600 mr-2 text-base animate-bounce"></i> Emergency Cases</span>
+                <span class="text-xs font-extrabold bg-red-600 text-white px-2 py-1 rounded-md uppercase tracking-wider">Open & Ready</span>
+              </div>`;
+          } else {
+            emergencyContainer.innerHTML = `
+              <div class="flex items-center justify-between p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl">
+                <span class="text-sm font-medium flex items-center"><i class="fa-solid fa-ban text-gray-400 mr-2"></i> Emergency Services</span>
+                <span class="text-xs font-semibold bg-gray-300 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">Unavailable</span>
+              </div>`;
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Execute application stack mapping pipelines
+    evaluateClinicPipeline();
   </script>
 </body>
 </html>
