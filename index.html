@@ -34,7 +34,7 @@
           
           <!-- Live Status Output Badge Block -->
           <div class="text-right">
-            <div id="status-container" class="flex flex-col items-end space-y-1">
+            <div id="status-container" class="flex flex-col items-end">
               <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-400">
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
@@ -45,7 +45,22 @@
         </div>
       </div>
 
-      <!-- 3. Dedicated Clinic Notice Card (Shows during unexpected events/closures) -->
+      <!-- 🚶‍♂️ 3. NEW: Completely Separated Walk-In Availability Status Card -->
+      <div id="walkin-card" class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div id="walkin-icon-bg" class="w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center transition-all duration-200">
+              <i id="walkin-icon" class="fa-solid fa-door-open text-lg"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Walk-In Status</h3>
+              <p id="walkin-status-text" class="text-sm font-semibold text-gray-800">Checking schedule...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Dedicated Clinic Notice Card (Shows during unexpected events/closures) -->
       <div id="closure-notice-container" class="mb-4 hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-950">
         <div class="flex items-start space-x-3">
           <div class="text-amber-600 mt-0.5">
@@ -58,7 +73,7 @@
         </div>
       </div>
 
-      <!-- 4. Doctor Availability Dynamic Area -->
+      <!-- 5. Doctor Availability Dynamic Area -->
       <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -73,26 +88,26 @@
         </div>
       </div>
 
-      <!-- 5. Dynamic Emergency Services Panel -->
+      <!-- 6. Dynamic Emergency Services Panel -->
       <div id="emergency-container" class="mb-5">
         <!-- Managed dynamically via JavaScript -->
       </div>
 
-      <!-- 6. Dynamic swipeable Announcement Poster Slider Area -->
+      <!-- 7. Dynamic swipeable Announcement Poster Slider Area -->
       <div id="poster-container" class="mb-5 hidden">
         <div id="carousel-wrapper" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
           <!-- Dynamic Images injected here -->
         </div>
       </div>
 
-      <!-- 7. Running Text Announcement Marquee -->
+      <!-- 8. Running Text Announcement Marquee -->
       <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 mb-5 overflow-hidden whitespace-nowrap">
         <div id="announcement-text" class="inline-block animate-marquee font-medium text-sm">
           Fetching live clinic announcements...
         </div>
       </div>
 
-      <!-- 8. 24/7 Active Book Appointment Button (Dynamic shifting labels) -->
+      <!-- 9. 24/7 Active Book Appointment Button -->
       <div id="appointment-action-wrapper">
         <a id="appointment-btn" href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
            target="_blank" 
@@ -101,7 +116,7 @@
         </a>
       </div>
 
-      <!-- 9. Branded Price Checker Quick Link Button -->
+      <!-- 10. Branded Price Checker Quick Link Button -->
       <div class="mb-5">
         <a href="https://price-checker-rho.vercel.app/" 
            target="_blank" 
@@ -110,7 +125,7 @@
         </a>
       </div>
 
-      <!-- 10. Autopilot Pet Fun Facts Module -->
+      <!-- 11. Autopilot Pet Fun Facts Module -->
       <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-5 text-purple-950">
         <h4 class="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center mb-1">
           <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-purple-600"></i> Did You Know?
@@ -118,7 +133,7 @@
         <p id="pet-fact-text" class="text-sm leading-relaxed font-medium">Loading a fun pet fact...</p>
       </div>
 
-      <!-- 11. Link to Monthly Calendar View -->
+      <!-- 12. Link to Monthly Calendar View -->
       <div class="text-center">
         <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-[#212C68] hover:text-[#00CD52] hover:underline transition duration-150">
           <i class="fa-regular fa-calendar-days mr-2"></i> View Monthly Doctor Roster
@@ -126,7 +141,7 @@
       </div>
     </div>
 
-    <!-- 12. Permanent Appointment Priority Policy Disclaimer -->
+    <!-- 13. Permanent Appointment Priority Policy Disclaimer -->
     <div class="mt-12 pt-4 border-t border-gray-100 text-center">
       <p class="text-xs text-gray-400 leading-relaxed">
         <strong>Notice:</strong> Petpal Animal Clinic operates primarily on an <strong>appointment basis</strong>. Confirmed appointments are prioritized. Walk-ins are accepted strictly subject to schedule slot openings. Emergency cases always receive immediate priority.
@@ -217,6 +232,10 @@
       const lastUpdatedElement = document.getElementById('last-updated');
       const closureNoticeContainer = document.getElementById('closure-notice-container');
       
+      const walkinIconBg = document.getElementById('walkin-icon-bg');
+      const walkinIcon = document.getElementById('walkin-icon');
+      const walkinStatusText = document.getElementById('walkin-status-text');
+      
       const now = new Date();
       const currentDay = now.getDay(); 
       const currentHour = now.getHours();
@@ -268,10 +287,15 @@
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800 border border-amber-200">
               <i class="fa-solid fa-utensils mr-1.5 text-xs"></i>Lunch Break
             </span>
-            <p class="text-[11px] text-amber-600 font-bold mt-0.5">Walk-Ins: Closed</p>
           `;
           lastUpdatedElement.innerText = "";
           doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Lunch Break (1:00 PM - 2:30 PM)";
+          
+          // Separate Walk-In card output parameters
+          walkinIconBg.className = "w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center";
+          walkinIcon.className = "fa-solid fa-utensils text-lg";
+          walkinStatusText.innerText = "Closed (Resuming at 2:30 PM)";
+          
           updateEmergencyUI(liveEmergency, emergencyContainer, false);
           setWhatsAppButtonState('closed');
           return;
@@ -303,43 +327,53 @@
         // ==========================================
         if (liveStatus.toLowerCase() === 'emergency priority') {
           container.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-600 text-white animate-pulse mb-0.5">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-600 text-white animate-pulse">
               <i class="fa-solid fa-triangle-exclamation mr-1.5 animate-bounce"></i>Critical Priority
             </span>
-            <p class="text-[11px] text-red-600 font-bold tracking-tight">${liveWaitTime}</p>
-            <p class="text-[11px] text-red-500 font-extrabold mt-0.5"><i class="fa-solid fa-ban mr-1"></i>Walk-Ins: Suspended</p>
+            <p class="text-[11px] text-red-600 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
+          walkinIconBg.className = "w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center animate-pulse";
+          walkinIcon.className = "fa-solid fa-ban text-lg";
+          walkinStatusText.innerText = "Suspended (Emergencies Only)";
+          
         } else if (liveStatus.toLowerCase() === 'peak volume') {
           container.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-500 text-white mb-0.5">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-500 text-white">
               <span class="w-2 h-2 bg-white rounded-full mr-2"></span>Peak Volume
             </span>
-            <p class="text-[11px] text-amber-600 font-bold tracking-tight">${liveWaitTime}</p>
-            <p class="text-[11px] text-amber-600 font-extrabold mt-0.5"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Walk-Ins: Fully Booked</p>
+            <p class="text-[11px] text-amber-600 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
+          walkinIconBg.className = "w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center";
+          walkinIcon.className = "fa-solid fa-triangle-exclamation text-lg";
+          walkinStatusText.innerText = "Fully Booked (Appointments Only)";
+          
         } else if (liveStatus.toLowerCase() === 'moderate') {
           container.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200 mb-0.5">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
               <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>Moderate Flow
             </span>
-            <p class="text-[11px] text-yellow-700 font-bold tracking-tight">${liveWaitTime}</p>
-            <p class="text-[11px] text-yellow-600 font-extrabold mt-0.5"><i class="fa-solid fa-circle-info mr-1"></i>Walk-Ins: Limited Slots</p>
+            <p class="text-[11px] text-yellow-700 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
+          walkinIconBg.className = "w-10 h-10 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center";
+          walkinIcon.className = "fa-solid fa-circle-info text-lg";
+          walkinStatusText.innerText = "Limited Slots (Appointments Prioritized)";
+          
         } else { // Available
           container.innerHTML = `
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 mb-0.5">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
               <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>Available
             </span>
-            <p class="text-[11px] text-green-600 font-bold tracking-tight">${liveWaitTime}</p>
-            <p class="text-[11px] text-green-600 font-extrabold mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i>Walk-Ins: Open</p>
+            <p class="text-[11px] text-green-600 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
+          walkinIconBg.className = "w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center";
+          walkinIcon.className = "fa-solid fa-circle-check text-lg";
+          walkinStatusText.innerText = "Open (Appointments Prioritized)";
         }
 
         lastUpdatedElement.innerText = liveLastUpdated ? `Updated: ${liveLastUpdated}` : "";
         doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Duty / Active";
         updateEmergencyUI(liveEmergency, emergencyContainer, false);
         
-        // 🚀 Injects the specific text strings based on Peak Volume criteria
         if (liveStatus.toLowerCase() === 'peak volume') {
           setWhatsAppButtonState('full');
         } else {
@@ -357,10 +391,20 @@
         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300">
           <i class="fa-solid fa-door-closed mr-1.5 text-xs"></i>Closed
         </span>
-        <p class="text-[11px] text-gray-500 font-bold mt-1">Walk-Ins: Closed</p>
       `;
       
       doctorAvailability.innerText = "No doctor on duty (Clinic Closed)";
+      
+      // Clear and grey-out the standalone Walk-In status tracking nodes
+      const walkinIconBg = document.getElementById('walkin-icon-bg');
+      const walkinIcon = document.getElementById('walkin-icon');
+      const walkinStatusText = document.getElementById('walkin-status-text');
+      if (walkinIconBg && walkinIcon && walkinStatusText) {
+        walkinIconBg.className = "w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center";
+        walkinIcon.className = "fa-solid fa-door-closed text-lg";
+        walkinStatusText.innerText = "Closed";
+      }
+
       if (document.getElementById('closure-notice-text')) {
         document.getElementById('closure-notice-text').innerText = noticeMessage;
       }
@@ -373,7 +417,6 @@
       setWhatsAppButtonState('closed');
     }
 
-    // 🤝 Refactored Engine tracking 3-way layout messaging variants
     function setWhatsAppButtonState(mode) {
       const appointmentBtn = document.getElementById('appointment-btn');
       if (!appointmentBtn) return;
