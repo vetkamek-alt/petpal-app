@@ -19,7 +19,7 @@
         <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Veterinary Clinic</p>
       </div>
 
-      <div class="bg-indigo-50 rounded-2xl p-4 mb-5 border border-indigo-100">
+      <div class="bg-indigo-50 rounded-2xl p-4 mb-4 border border-indigo-100">
         <div class="flex justify-between items-start">
           <div>
             <p class="text-xs uppercase text-indigo-400 font-semibold">Today's Date</p>
@@ -34,6 +34,18 @@
               </span>
             </div>
             <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="closure-notice-container" class="mb-4 hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-950">
+        <div class="flex items-start space-x-3">
+          <div class="text-amber-600 mt-0.5">
+            <i class="fa-solid fa-circle-exclamation text-lg"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-0.5">Important Notice</h4>
+            <p id="closure-notice-text" class="text-sm font-medium leading-relaxed"></p>
           </div>
         </div>
       </div>
@@ -174,6 +186,7 @@
       const doctorAvailability = document.getElementById('doctor-availability');
       const emergencyContainer = document.getElementById('emergency-container');
       const lastUpdatedElement = document.getElementById('last-updated');
+      const closureNoticeContainer = document.getElementById('closure-notice-container');
       
       const now = new Date();
       const currentDay = now.getDay(); 
@@ -188,7 +201,7 @@
 
       // CRITICAL FIXED RULE: WEEKLY OFF DAYS (Always closed Sunday & Tuesday)
       if (currentDay === 0 || currentDay === 2) {
-        setClinicClosedUI("Clinic Off-Day", "Clinic Closed Today", container, doctorAvailability, lastUpdatedElement, emergencyContainer);
+        setClinicClosedUI("Clinic Off-Day", "We are closed today for our scheduled weekly rest day.", container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer);
         return;
       }
 
@@ -213,11 +226,13 @@
         handlePosterArrayRendering(livePosterUrlString);
 
         // 🛑 MANUAL OVERRIDE: HOLIDAY & EARLY CLOSURE TRIGGER SWITCH
-        // Updated to label as "Clinic Notice" to naturally match both scenarios
         if (liveHolidayClosure !== "") {
-          setClinicClosedUI("Clinic Notice", liveHolidayClosure, container, doctorAvailability, lastUpdatedElement, emergencyContainer);
+          setClinicClosedUI("Clinic Notice", liveHolidayClosure, container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer);
           return;
         }
+
+        // Hide notice block entirely if no custom system or off-day rule overrides exist
+        closureNoticeContainer.classList.add('hidden');
 
         // 🕒 AUTOMATED OVERRIDE: DAILY LUNCH BREAK CLOCK (1:00 PM - 2:30 PM)
         if (totalMinutesToday >= lunchStart && totalMinutesToday < lunchEnd) {
@@ -228,7 +243,7 @@
             <p class="text-xs text-amber-600 mt-1 font-semibold">Resuming at 2:30 PM</p>
           `;
           lastUpdatedElement.innerText = "";
-          doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Lunch Break";
+          doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Lunch Break (1:00 PM - 2:30 PM)";
           updateEmergencyUI(liveEmergency, emergencyContainer, false);
           setWhatsAppButtonState(true);
           return;
@@ -241,17 +256,17 @@
         if (currentDay === 6) { // Saturday
           const satOpenMorning = 11 * 60;       
           const satCloseEvening = (17 * 60) + 30; 
-          if (totalMinutesToday < satOpenMorning) { isOutsideHours = true; nextOpenTime = "Opens at 11:00 AM"; }
-          else if (totalMinutesToday >= satCloseEvening) { isOutsideHours = true; nextOpenTime = "Closed for the day"; }
+          if (totalMinutesToday < satOpenMorning) { isOutsideHours = true; nextOpenTime = "Clinic opens at 11:00 AM today."; }
+          else if (totalMinutesToday >= satCloseEvening) { isOutsideHours = true; nextOpenTime = "Clinic is closed for the day."; }
         } else { // Mon, Wed, Thu, Fri
           const weekdayOpenMorning = (10 * 60) + 30; 
           const weekdayCloseEvening = 18 * 60;       
-          if (totalMinutesToday < weekdayOpenMorning) { isOutsideHours = true; nextOpenTime = "Opens at 10:30 AM"; }
-          else if (totalMinutesToday >= weekdayCloseEvening) { isOutsideHours = true; nextOpenTime = "Closed for the day"; }
+          if (totalMinutesToday < weekdayOpenMorning) { isOutsideHours = true; nextOpenTime = "Clinic opens at 10:30 AM today."; }
+          else if (totalMinutesToday >= weekdayCloseEvening) { isOutsideHours = true; nextOpenTime = "Clinic is closed for the day."; }
         }
 
         if (isOutsideHours) {
-          setClinicClosedUI("Outside Operating Hours", nextOpenTime, container, doctorAvailability, lastUpdatedElement, emergencyContainer);
+          setClinicClosedUI("Outside Operating Hours", nextOpenTime, container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer);
           return;
         }
 
@@ -299,14 +314,23 @@
       }
     }
 
-    function setClinicClosedUI(statusSubtext, docText, container, doctorAvailability, lastUpdatedElement, emergencyContainer) {
+    // Modernized UI state split handling parameters
+    function setClinicClosedUI(statusSubtext, noticeMessage, container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer) {
       container.innerHTML = `
         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300">
           <i class="fa-solid fa-door-closed mr-1.5 text-xs"></i>Closed
         </span>
         <p class="text-xs text-gray-500 mt-1 font-semibold">${statusSubtext}</p>
       `;
-      doctorAvailability.innerText = docText;
+      
+      // 🤝 THE SEPARATION FIX: 
+      // Doctor status layout remains standard and isolated...
+      doctorAvailability.innerText = "No doctor on duty (Clinic Closed)";
+      
+      // ...While the explanation data string gets injected into its own dedicated banner component
+      document.getElementById('closure-notice-text').innerText = noticeMessage;
+      closureNoticeContainer.classList.remove('hidden');
+
       lastUpdatedElement.innerText = "";
       updateEmergencyUI("unavailable", emergencyContainer, true);
       setWhatsAppButtonState(true);
