@@ -4,18 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Petpal Clinic Portal</title>
-  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <!-- FontAwesome Vector Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col justify-between text-gray-800">
 
-  <!-- Mobile-centric Application Frame -->
   <div class="max-w-md mx-auto w-full bg-white shadow-lg min-h-screen p-6 flex flex-col justify-between">
     
     <div>
-      <!-- 1. Petpal Logo -->
       <div class="text-center my-6">
         <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">
           <i class="fa-solid fa-paw mr-2"></i>Petpal
@@ -23,7 +19,6 @@
         <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Veterinary Clinic</p>
       </div>
 
-      <!-- 2. Today's Date & Real-time Automated Status Area -->
       <div class="bg-indigo-50 rounded-2xl p-4 mb-5 border border-indigo-100">
         <div class="flex justify-between items-start">
           <div>
@@ -31,7 +26,6 @@
             <p id="current-date" class="text-lg font-bold text-indigo-900">Loading date...</p>
           </div>
           
-          <!-- Live Status Output Badge -->
           <div class="text-right">
             <p class="text-xs uppercase text-indigo-400 font-semibold mb-1">Clinic Status</p>
             <div id="status-container">
@@ -39,13 +33,11 @@
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
             </div>
-            <!-- Last Updated Element Indicator -->
             <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
           </div>
         </div>
       </div>
 
-      <!-- 3. Doctor Availability Dynamic Area -->
       <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -60,28 +52,23 @@
         </div>
       </div>
 
-      <!-- 4. Dynamic Emergency Services Panel -->
       <div id="emergency-container" class="mb-5">
-        <!-- Managed dynamically via JavaScript -->
-      </div>
+        </div>
 
-      <!-- 5. Running Text Announcement Marquee -->
       <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 mb-5 overflow-hidden whitespace-nowrap">
         <div id="announcement-text" class="inline-block animate-marquee font-medium text-sm">
           Fetching live clinic announcements...
         </div>
       </div>
 
-      <!-- 6. Dynamic Book Appointment Button -->
       <div id="appointment-action-wrapper">
-        <a href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
+        <a id="appointment-btn" href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
            target="_blank" 
            class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-6 rounded-2xl shadow-md transition duration-200 transform active:scale-95 mb-5">
           <i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book an Appointment
         </a>
       </div>
 
-      <!-- 7. Link to Monthly Calendar View -->
       <div class="text-center">
         <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">
           <i class="fa-regular fa-calendar-days mr-2"></i> View Monthly Doctor Roster
@@ -89,7 +76,6 @@
       </div>
     </div>
 
-    <!-- 8. Clinic Disclaimer -->
     <div class="mt-12 pt-4 border-t border-gray-100 text-center">
       <p class="text-xs text-gray-400 leading-relaxed">
         <strong>Disclaimer:</strong> Real-time status and doctor availability are subject to change due to emergency cases. For urgent life-threatening situations, please call our emergency hotline directly.
@@ -98,14 +84,12 @@
 
   </div>
 
-  <!-- Smooth Marquee Motion Styling -->
   <style>
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
     .animate-marquee:hover { animation-play-state: paused; }
   </style>
 
-  <!-- Application Automation Engine Script -->
   <script>
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
@@ -145,15 +129,14 @@
       const currentMinute = now.getMinutes();
       const totalMinutesToday = (currentHour * 60) + currentMinute;
 
-      // Baseline Shared Parameters
-      const lunchStart = 13 * 60;       // 1:00 PM
-      const lunchEnd = (14 * 60) + 30;  // 2:30 PM
+      const lunchStart = 13 * 60;       
+      const lunchEnd = (14 * 60) + 30;  
 
       // ==========================================
       // OVERRIDE RULE 1: CLINIC CLOSED DAYS (Tuesday or Sunday)
       // ==========================================
       if (currentDay === 0 || currentDay === 2) {
-        setClinicClosedUI("Clinic Off-Day", "Closed Today", container, doctorAvailability, lastUpdatedElement, emergencyContainer, appointmentWrapper);
+        setClinicClosedUI("Clinic Off-Day", "Clinic Closed Today", container, doctorAvailability, lastUpdatedElement, emergencyContainer);
         return;
       }
 
@@ -168,6 +151,14 @@
           <p class="text-xs text-amber-600 mt-1 font-semibold">Resuming at 2:30 PM</p>
         `;
         lastUpdatedElement.innerText = "";
+        
+        // Let the appointment button shift context to advance booking during lunch
+        const appointmentBtn = document.getElementById('appointment-btn');
+        if (appointmentBtn) {
+          appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20see%20you%20are%20currently%20having%20a%20lunch%20break,%20but%20I%20would%20like%20to%20leave%20a%20message%20to%20book%20an%20appointment%20for%20another%20available%20day.";
+          appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book for Next Available Day`;
+        }
+
         fetchBackupDataOnly(false, "On Lunch Break"); 
         return;
       }
@@ -176,12 +167,11 @@
       // OVERRIDE RULE 3: WEEKDAY & SATURDAY BOUNDARIES
       // ==========================================
       let isOutsideHours = false;
-      let hoursMessage = "";
       let nextOpenTime = "";
 
       if (currentDay === 6) { // Saturday
-        const satOpenMorning = 11 * 60;       // 11:00 AM
-        const satCloseEvening = (17 * 60) + 30; // 5:30 PM
+        const satOpenMorning = 11 * 60;       
+        const satCloseEvening = (17 * 60) + 30; 
         
         if (totalMinutesToday < satOpenMorning) {
           isOutsideHours = true;
@@ -191,8 +181,8 @@
           nextOpenTime = "Closed for the day";
         }
       } else { // Mon, Wed, Thu, Fri
-        const weekdayOpenMorning = (10 * 60) + 30; // 10:30 AM
-        const weekdayCloseEvening = 18 * 60;       // 6:00 PM
+        const weekdayOpenMorning = (10 * 60) + 30; 
+        const weekdayCloseEvening = 18 * 60;       
         
         if (totalMinutesToday < weekdayOpenMorning) {
           isOutsideHours = true;
@@ -203,9 +193,8 @@
         }
       }
 
-      // If current time drops outside defined windows, lock interface execution
       if (isOutsideHours) {
-        setClinicClosedUI("Outside Operating Hours", nextOpenTime, container, doctorAvailability, lastUpdatedElement, emergencyContainer, appointmentWrapper);
+        setClinicClosedUI("Outside Operating Hours", nextOpenTime, container, doctorAvailability, lastUpdatedElement, emergencyContainer);
         return;
       }
 
@@ -255,6 +244,13 @@
           `;
         }
 
+        // Reset booking button link to standard operational template
+        const appointmentBtn = document.getElementById('appointment-btn');
+        if (appointmentBtn) {
+          appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet.";
+          appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book an Appointment`;
+        }
+
         // Inject Timestamp text tracking string
         lastUpdatedElement.innerText = liveLastUpdated ? `Updated: ${liveLastUpdated}` : "";
 
@@ -272,8 +268,8 @@
       }
     }
 
-    // Extracted clean state engine to handle Closed UI structures
-    function setClinicClosedUI(statusSubtext, docText, container, doctorAvailability, lastUpdatedElement, emergencyContainer, appointmentWrapper) {
+    // Extracted state engine to handle Closed UI structures (Keeps button active for future booking)
+    function setClinicClosedUI(statusSubtext, docText, container, doctorAvailability, lastUpdatedElement, emergencyContainer) {
       container.innerHTML = `
         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300">
           <i class="fa-solid fa-door-closed mr-1.5 text-xs"></i>Closed
@@ -288,11 +284,14 @@
           <span class="text-xs font-semibold bg-gray-300 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">Unavailable</span>
         </div>
       `;
-      appointmentWrapper.innerHTML = `
-        <div class="block w-full text-center bg-gray-300 text-gray-600 font-bold py-4 px-6 rounded-2xl cursor-not-allowed shadow-inner mb-5">
-          Appointments Disabled (Closed)
-        </div>
-      `;
+      
+      // Dynamic shift: Changes text to guide customer to future appointment bookings instead of disabling
+      const appointmentBtn = document.getElementById('appointment-btn');
+      if (appointmentBtn) {
+        appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20see%20the%20clinic%20is%20currently%20closed,%20but%20I%20would%20like%20to%20leave%20a%20message%20to%20book%20an%20appointment%20for%20another%20available%20day.";
+        appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book for Next Available Day`;
+      }
+      
       fetchBackupDataOnly(true, docText);
     }
 
