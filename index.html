@@ -4,14 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Petpal Clinic Portal</title>
+  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- FontAwesome Vector Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col justify-between text-gray-800">
 
+  <!-- Mobile-centric Application Frame -->
   <div class="max-w-md mx-auto w-full bg-white shadow-lg min-h-screen p-6 flex flex-col justify-between">
     
     <div>
+      <!-- 1. Petpal Logo -->
       <div class="text-center my-6">
         <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">
           <i class="fa-solid fa-paw mr-2"></i>Petpal
@@ -19,6 +23,7 @@
         <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Veterinary Clinic</p>
       </div>
 
+      <!-- 2. Today's Date & Real-time Automated Status Area -->
       <div class="bg-indigo-50 rounded-2xl p-4 mb-5 border border-indigo-100">
         <div class="flex justify-between items-start">
           <div>
@@ -26,6 +31,7 @@
             <p id="current-date" class="text-lg font-bold text-indigo-900">Loading date...</p>
           </div>
           
+          <!-- Live Status Output Badge -->
           <div class="text-right">
             <p class="text-xs uppercase text-indigo-400 font-semibold mb-1">Clinic Status</p>
             <div id="status-container">
@@ -33,11 +39,13 @@
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
             </div>
+            <!-- Last Updated Element Indicator -->
             <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
           </div>
         </div>
       </div>
 
+      <!-- 3. Doctor Availability Dynamic Area -->
       <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -52,20 +60,26 @@
         </div>
       </div>
 
+      <!-- 4. Dynamic Emergency Services Panel -->
       <div id="emergency-container" class="mb-5">
-        </div>
-
-      <div id="poster-container" class="mb-5 hidden">
-        <div id="carousel-wrapper" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
-          </div>
+        <!-- Managed dynamically via JavaScript -->
       </div>
 
+      <!-- 5. Dynamic swipeable Announcement Poster Slider Area -->
+      <div id="poster-container" class="mb-5 hidden">
+        <div id="carousel-wrapper" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
+          <!-- Dynamic Images injected here -->
+        </div>
+      </div>
+
+      <!-- 6. Running Text Announcement Marquee -->
       <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 mb-5 overflow-hidden whitespace-nowrap">
         <div id="announcement-text" class="inline-block animate-marquee font-medium text-sm">
           Fetching live clinic announcements...
         </div>
       </div>
 
+      <!-- 7. 24/7 Active Book Appointment Button -->
       <div id="appointment-action-wrapper">
         <a id="appointment-btn" href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
            target="_blank" 
@@ -74,6 +88,15 @@
         </a>
       </div>
 
+      <!-- 8. Autopilot Pet Fun Facts Module (30+ Facts Array Pool) -->
+      <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-5 text-purple-950">
+        <h4 class="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center mb-1">
+          <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-purple-600"></i> Did You Know?
+        </h4>
+        <p id="pet-fact-text" class="text-sm leading-relaxed font-medium">Loading a fun pet fact...</p>
+      </div>
+
+      <!-- 9. Link to Monthly Calendar View -->
       <div class="text-center">
         <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">
           <i class="fa-regular fa-calendar-days mr-2"></i> View Monthly Doctor Roster
@@ -81,6 +104,7 @@
       </div>
     </div>
 
+    <!-- 10. Clinic Disclaimer -->
     <div class="mt-12 pt-4 border-t border-gray-100 text-center">
       <p class="text-xs text-gray-400 leading-relaxed">
         <strong>Disclaimer:</strong> Real-time status and doctor availability are subject to change due to emergency cases. For urgent life-threatening situations, please call our emergency hotline directly.
@@ -89,6 +113,7 @@
 
   </div>
 
+  <!-- Smooth Motion Styles -->
   <style>
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
@@ -97,11 +122,47 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 
+  <!-- Application Automation Engine Script -->
   <script>
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLnd2OK3OrSVmRuFeD2bbItXkODt4ed49NHDWt0hc5gI_ubC_uFvGbZHe5qisH12mkwInYH5FJf90F/pub?output=csv';
+
+    // 🐾 Expanded Autopilot Collection containing 31 unique pet facts
+    const petFactsCollection = [
+      "A dog's sense of smell is up to 100,000 times more sensitive than a human's!",
+      "Cats have 32 muscles in each of their ears, allowing them to rotate them up to 180 degrees.",
+      "A dog's nose print is completely unique, much like a human fingerprint!",
+      "Adult cats only meow to communicate with humans, almost never to other cats.",
+      "A cat's purr vibrates at a frequency that can actually stimulate bone and muscle healing!",
+      "Dogs can understand up to 250 words and gestures, making them as smart as a 2-year-old human.",
+      "Cats spend nearly 30% to 50% of their waking hours grooming themselves to stay clean.",
+      "All puppies are born functionally blind and deaf—their primary senses develop after a few weeks.",
+      "A cat can jump up to six times its own height in a single bound!",
+      "Dogs have three eyelids! The third one helps keep their eyes lubricated and clean.",
+      "A dog's whiskers help them 'see' in the dark by detecting subtle shifts in surrounding air currents.",
+      "Tail wagging has a direction: wagging more to the right means happy, while to the left can signal anxiety.",
+      "Dalmatians are born completely white; they develop their trademark spots as they grow older.",
+      "A dog's normal body temperature sits higher than ours, usually between 38°C and 39°C.",
+      "Greyhounds can outrun cheetahs in long-distance races because cheetahs lose breath after short sprints.",
+      "Dogs sweat only through their paw pads and cool themselves down primarily by panting.",
+      "The Basenji is the world's only dog breed that cannot bark; instead, they make a unique yodeling sound.",
+      "Dogs have about 1,700 taste buds, whereas humans possess around 9,000.",
+      "Newfoundlands have webbed feet and water-resistant coats, making them exceptional swimmers.",
+      "Cats are obligate carnivores, meaning their bodies require nutrients found only in animal meat to survive.",
+      "A cat's whiskers are generally as wide as its body, acting as a built-in ruler to judge tight openings.",
+      "Cats have a special reflective layer behind their eyes called the tapetum lucidum, helping them see well in the dark.",
+      "Calico and tortoiseshell patterned cats are almost exclusively female due to genetic chromosome structures.",
+      "A cat's collarbone isn't connected to other bones; it's anchored in muscle, letting them squeeze through tight gaps.",
+      "Domestic house cats share an incredible 95.6% of their genetic makeup with wild tigers!",
+      "Cats have a built-in 'righting reflex' that allows them to reorient their bodies mid-air to land on their paws.",
+      "Cats have 230 bones in their skeletal system, while adult humans only have 206.",
+      "Cats are crepuscular creatures, which means they are naturally most energetic during dawn and dusk.",
+      "A group of adult cats is formally called a 'clowder', while a group of kittens is called a 'kindle'.",
+      "Dogs have a sense of time and can predict routine daily profiles like regular walk or feeding hours.",
+      "A cat's nose pad has a unique pattern of ridges and bumps, just like a human fingerprint!"
+    ];
 
     function parseCSV(text) {
       let p = '', r = [];
@@ -123,6 +184,11 @@
       return r;
     }
 
+    function triggerRandomFact() {
+      const randomIndex = Math.floor(Math.random() * petFactsCollection.length);
+      document.getElementById('pet-fact-text').innerText = petFactsCollection[randomIndex];
+    }
+
     async function evaluateClinicPipeline() {
       const container = document.getElementById('status-container');
       const doctorAvailability = document.getElementById('doctor-availability');
@@ -130,13 +196,16 @@
       const lastUpdatedElement = document.getElementById('last-updated');
       
       const now = new Date();
-      const currentDay = now.getDay(); // 0 = Sunday, 2 = Tuesday, 6 = Saturday
+      const currentDay = now.getDay(); 
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
       const totalMinutesToday = (currentHour * 60) + currentMinute;
 
       const lunchStart = 13 * 60;       
       const lunchEnd = (14 * 60) + 30;  
+
+      // Execute random fact presentation engine
+      triggerRandomFact();
 
       // CRITICAL FIXED RULE: WEEKLY OFF DAYS (Always closed Sunday & Tuesday)
       if (currentDay === 0 || currentDay === 2) {
@@ -161,11 +230,10 @@
         const livePosterUrlString = parsedRows[1][6] ? parsedRows[1][6].trim() : '';
         const liveHolidayClosure = parsedRows[1][7] ? parsedRows[1][7].trim() : '';
 
-        // Global Dynamic Overrides Pipeline Ingestion
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
         handlePosterArrayRendering(livePosterUrlString);
 
-        // 🛑 MANUAL OVERRIDE: HOLIDAY TRIGGER SWITCH (If text exists in Column H)
+        // 🛑 MANUAL OVERRIDE: HOLIDAY TRIGGER SWITCH
         if (liveHolidayClosure !== "") {
           setClinicClosedUI("Public Holiday Notice", liveHolidayClosure, container, doctorAvailability, lastUpdatedElement, emergencyContainer);
           return;
@@ -314,10 +382,6 @@
       });
       wrapper.innerHTML = calculatedHTML;
       container.classList.remove('hidden');
-    }
-
-    async function fetchBackupDataOnly(offDayMode, fallbackDocText) {
-      // Retained framework mapping loop for internal stability redundancy
     }
 
     evaluateClinicPipeline();
