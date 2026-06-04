@@ -4,18 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Petpal Clinic Portal</title>
-  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <!-- FontAwesome Vector Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col justify-between text-gray-800">
 
-  <!-- Mobile-centric Application Frame -->
   <div class="max-w-md mx-auto w-full bg-white shadow-lg min-h-screen p-6 flex flex-col justify-between">
     
     <div>
-      <!-- 1. Petpal Logo -->
       <div class="text-center my-6">
         <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">
           <i class="fa-solid fa-paw mr-2"></i>Petpal
@@ -23,7 +19,6 @@
         <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Veterinary Clinic</p>
       </div>
 
-      <!-- 2. Today's Date & Real-time Automated Status Area -->
       <div class="bg-indigo-50 rounded-2xl p-4 mb-5 border border-indigo-100">
         <div class="flex justify-between items-start">
           <div>
@@ -31,7 +26,6 @@
             <p id="current-date" class="text-lg font-bold text-indigo-900">Loading date...</p>
           </div>
           
-          <!-- Live Status Output Badge -->
           <div class="text-right">
             <p class="text-xs uppercase text-indigo-400 font-semibold mb-1">Clinic Status</p>
             <div id="status-container">
@@ -39,13 +33,11 @@
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
             </div>
-            <!-- Last Updated Element Indicator -->
             <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
           </div>
         </div>
       </div>
 
-      <!-- 3. Doctor Availability Dynamic Area -->
       <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -60,26 +52,20 @@
         </div>
       </div>
 
-      <!-- 4. Dynamic Emergency Services Panel -->
       <div id="emergency-container" class="mb-5">
-        <!-- Managed dynamically via JavaScript -->
-      </div>
+        </div>
 
-      <!-- 📸 5. Dynamic swipeable Announcement Poster Slider Area -->
       <div id="poster-container" class="mb-5 hidden">
         <div id="carousel-wrapper" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
-          <!-- Dynamic Images will be generated and injected here -->
-        </div>
+          </div>
       </div>
 
-      <!-- 6. Running Text Announcement Marquee -->
       <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 mb-5 overflow-hidden whitespace-nowrap">
         <div id="announcement-text" class="inline-block animate-marquee font-medium text-sm">
           Fetching live clinic announcements...
         </div>
       </div>
 
-      <!-- 7. 24/7 Active Book Appointment Button -->
       <div id="appointment-action-wrapper">
         <a id="appointment-btn" href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
            target="_blank" 
@@ -88,7 +74,6 @@
         </a>
       </div>
 
-      <!-- 8. Link to Monthly Calendar View -->
       <div class="text-center">
         <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">
           <i class="fa-regular fa-calendar-days mr-2"></i> View Monthly Doctor Roster
@@ -96,7 +81,6 @@
       </div>
     </div>
 
-    <!-- 9. Clinic Disclaimer -->
     <div class="mt-12 pt-4 border-t border-gray-100 text-center">
       <p class="text-xs text-gray-400 leading-relaxed">
         <strong>Disclaimer:</strong> Real-time status and doctor availability are subject to change due to emergency cases. For urgent life-threatening situations, please call our emergency hotline directly.
@@ -105,18 +89,14 @@
 
   </div>
 
-  <!-- Smooth Motion & Custom Scrollbar Hiding Engine Styles -->
   <style>
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
     .animate-marquee:hover { animation-play-state: paused; }
-    
-    /* Elegant visual trick: keeps touch scrolling completely active but deletes desktop scrollbars */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 
-  <!-- Application Automation Engine Script -->
   <script>
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
@@ -147,11 +127,10 @@
       const container = document.getElementById('status-container');
       const doctorAvailability = document.getElementById('doctor-availability');
       const emergencyContainer = document.getElementById('emergency-container');
-      const appointmentWrapper = document.getElementById('appointment-action-wrapper');
       const lastUpdatedElement = document.getElementById('last-updated');
       
       const now = new Date();
-      const currentDay = now.getDay(); 
+      const currentDay = now.getDay(); // 0 = Sunday, 2 = Tuesday, 6 = Saturday
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
       const totalMinutesToday = (currentHour * 60) + currentMinute;
@@ -159,73 +138,14 @@
       const lunchStart = 13 * 60;       
       const lunchEnd = (14 * 60) + 30;  
 
-      // ==========================================
-      // OVERRIDE RULE 1: CLINIC CLOSED DAYS (Tuesday or Sunday)
-      // ==========================================
+      // CRITICAL FIXED RULE: WEEKLY OFF DAYS (Always closed Sunday & Tuesday)
       if (currentDay === 0 || currentDay === 2) {
         setClinicClosedUI("Clinic Off-Day", "Clinic Closed Today", container, doctorAvailability, lastUpdatedElement, emergencyContainer);
         return;
       }
 
       // ==========================================
-      // OVERRIDE RULE 2: LUNCH BREAK TIME CLOCK (1:00 PM - 2:30 PM Everyday)
-      // ==========================================
-      if (totalMinutesToday >= lunchStart && totalMinutesToday < lunchEnd) {
-        container.innerHTML = `
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800 border border-amber-200">
-            <i class="fa-solid fa-utensils mr-1.5 text-xs"></i>Lunch Break
-          </span>
-          <p class="text-xs text-amber-600 mt-1 font-semibold">Resuming at 2:30 PM</p>
-        `;
-        lastUpdatedElement.innerText = "";
-        
-        const appointmentBtn = document.getElementById('appointment-btn');
-        if (appointmentBtn) {
-          appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20see%20you%20are%20currently%20having%20a%20lunch%20break,%20but%20I%20would%20like%20to%20leave%20a%20message%20to%20book%20an%20appointment%20for%20another%20available%20day.";
-          appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book for Next Available Day`;
-        }
-
-        fetchBackupDataOnly(false, "On Lunch Break"); 
-        return;
-      }
-
-      // ==========================================
-      // OVERRIDE RULE 3: WEEKDAY & SATURDAY BOUNDARIES
-      // ==========================================
-      let isOutsideHours = false;
-      let nextOpenTime = "";
-
-      if (currentDay === 6) { // Saturday
-        const satOpenMorning = 11 * 60;       
-        const satCloseEvening = (17 * 60) + 30; 
-        
-        if (totalMinutesToday < satOpenMorning) {
-          isOutsideHours = true;
-          nextOpenTime = "Opens at 11:00 AM";
-        } else if (totalMinutesToday >= satCloseEvening) {
-          isOutsideHours = true;
-          nextOpenTime = "Closed for the day";
-        }
-      } else { // Mon, Wed, Thu, Fri
-        const weekdayOpenMorning = (10 * 60) + 30; 
-        const weekdayCloseEvening = 18 * 60;       
-        
-        if (totalMinutesToday < weekdayOpenMorning) {
-          isOutsideHours = true;
-          nextOpenTime = "Opens at 10:30 AM";
-        } else if (totalMinutesToday >= weekdayCloseEvening) {
-          isOutsideHours = true;
-          nextOpenTime = "Closed for the day";
-        }
-      }
-
-      if (isOutsideHours) {
-        setClinicClosedUI("Outside Operating Hours", nextOpenTime, container, doctorAvailability, lastUpdatedElement, emergencyContainer);
-        return;
-      }
-
-      // ==========================================
-      // ROUTINE PIPELINE OPERATION (Inside Operating Hours)
+      // LIVE DATA STREAM FETCH
       // ==========================================
       try {
         const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&t=${new Date().getTime()}`);
@@ -239,8 +159,57 @@
         const liveEmergency = parsedRows[1][4].trim();
         const liveLastUpdated = parsedRows[1][5] ? parsedRows[1][5].trim() : '';
         const livePosterUrlString = parsedRows[1][6] ? parsedRows[1][6].trim() : '';
+        const liveHolidayClosure = parsedRows[1][7] ? parsedRows[1][7].trim() : '';
 
-        // Render Fluid Clinic Status Card based on tiers
+        // Global Dynamic Overrides Pipeline Ingestion
+        document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
+        handlePosterArrayRendering(livePosterUrlString);
+
+        // 🛑 MANUAL OVERRIDE: HOLIDAY TRIGGER SWITCH (If text exists in Column H)
+        if (liveHolidayClosure !== "") {
+          setClinicClosedUI("Public Holiday Notice", liveHolidayClosure, container, doctorAvailability, lastUpdatedElement, emergencyContainer);
+          return;
+        }
+
+        // 🕒 AUTOMATED OVERRIDE: DAILY LUNCH BREAK CLOCK (1:00 PM - 2:30 PM)
+        if (totalMinutesToday >= lunchStart && totalMinutesToday < lunchEnd) {
+          container.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800 border border-amber-200">
+              <i class="fa-solid fa-utensils mr-1.5 text-xs"></i>Lunch Break
+            </span>
+            <p class="text-xs text-amber-600 mt-1 font-semibold">Resuming at 2:30 PM</p>
+          `;
+          lastUpdatedElement.innerText = "";
+          doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Lunch Break";
+          updateEmergencyUI(liveEmergency, emergencyContainer, false);
+          setWhatsAppButtonState(true);
+          return;
+        }
+
+        // 🕒 AUTOMATED OVERRIDE: OPERATING BOUNDARIES CLOCK
+        let isOutsideHours = false;
+        let nextOpenTime = "";
+
+        if (currentDay === 6) { // Saturday
+          const satOpenMorning = 11 * 60;       
+          const satCloseEvening = (17 * 60) + 30; 
+          if (totalMinutesToday < satOpenMorning) { isOutsideHours = true; nextOpenTime = "Opens at 11:00 AM"; }
+          else if (totalMinutesToday >= satCloseEvening) { isOutsideHours = true; nextOpenTime = "Closed for the day"; }
+        } else { // Mon, Wed, Thu, Fri
+          const weekdayOpenMorning = (10 * 60) + 30; 
+          const weekdayCloseEvening = 18 * 60;       
+          if (totalMinutesToday < weekdayOpenMorning) { isOutsideHours = true; nextOpenTime = "Opens at 10:30 AM"; }
+          else if (totalMinutesToday >= weekdayCloseEvening) { isOutsideHours = true; nextOpenTime = "Closed for the day"; }
+        }
+
+        if (isOutsideHours) {
+          setClinicClosedUI("Outside Operating Hours", nextOpenTime, container, doctorAvailability, lastUpdatedElement, emergencyContainer);
+          return;
+        }
+
+        // ==========================================
+        // STANDARD ONLINE DISPLAY (Inside Business Hours)
+        // ==========================================
         if (liveStatus.toLowerCase() === 'emergency priority') {
           container.innerHTML = `
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-600 text-white animate-pulse">
@@ -271,23 +240,13 @@
           `;
         }
 
-        const appointmentBtn = document.getElementById('appointment-btn');
-        if (appointmentBtn) {
-          appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet.";
-          appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book an Appointment`;
-        }
-
-        // Render Carousel Loop Array
-        handlePosterArrayRendering(livePosterUrlString);
-
         lastUpdatedElement.innerText = liveLastUpdated ? `Updated: ${liveLastUpdated}` : "";
         doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Duty / Active";
         updateEmergencyUI(liveEmergency, emergencyContainer, false);
-
-        document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
+        setWhatsAppButtonState(false);
 
       } catch (err) {
-        console.error('Data pipeline loading exception:', err);
+        console.error('Data Ingestion Exception Error:', err);
         container.innerHTML = '<span class="text-xs text-gray-400">Offline</span>';
       }
     }
@@ -301,16 +260,20 @@
       `;
       doctorAvailability.innerText = docText;
       lastUpdatedElement.innerText = "";
-      
       updateEmergencyUI("unavailable", emergencyContainer, true);
-      
+      setWhatsAppButtonState(true);
+    }
+
+    function setWhatsAppButtonState(isClosedMode) {
       const appointmentBtn = document.getElementById('appointment-btn');
-      if (appointmentBtn) {
-        appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20see%20the%20clinic%20is%20currently%20closed,%20but%20I%20would%20like%20to%20leave%20a%20message%20to%20book%20an%20appointment%20for%20another%20available%20day.";
+      if (!appointmentBtn) return;
+      if (isClosedMode) {
+        appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20see%20the%20clinic%20is%20currently%20closed/on-break,%20but%20I%20would%20like%20to%20leave%20a%20message%20to%20book%20an%20appointment%20for%20another%20available%20day.";
         appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book for Next Available Day`;
+      } else {
+        appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet.";
+        appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book an Appointment`;
       }
-      
-      fetchBackupDataOnly(true, docText);
     }
 
     function updateEmergencyUI(liveEmergency, emergencyContainer, forceShowClosedState) {
@@ -335,57 +298,26 @@
       }
     }
 
-    // New Fluid Split Matrix Loop Parser mapping posters dynamically
     function handlePosterArrayRendering(rawUrlsString) {
       const container = document.getElementById('poster-container');
       const wrapper = document.getElementById('carousel-wrapper');
-      
       if (!rawUrlsString || rawUrlsString.trim() === "") {
-        container.classList.add('hidden');
-        return;
+        wrapper.innerHTML = ""; container.classList.add('hidden'); return;
       }
-
-      // Splitting string variables around the pipe icon '|'
       const imageArray = rawUrlsString.split('|').map(url => url.trim()).filter(url => url.startsWith('http'));
-
       if (imageArray.length === 0) {
-        container.classList.add('hidden');
-        return;
+        wrapper.innerHTML = ""; container.classList.add('hidden'); return;
       }
-
-      // Generate HTML list loop matrices map injection
       let calculatedHTML = '';
       imageArray.forEach(url => {
-        calculatedHTML += `
-          <img src="${url}" 
-               class="w-full shrink-0 snap-center rounded-2xl object-cover shadow-xs border border-gray-100" 
-               alt="Clinic Notice Poster">
-        `;
+        calculatedHTML += `<img src="${url}" class="w-full shrink-0 snap-center rounded-2xl object-cover shadow-xs border border-gray-100" alt="Clinic Notice Poster">`;
       });
-
       wrapper.innerHTML = calculatedHTML;
       container.classList.remove('hidden');
     }
 
     async function fetchBackupDataOnly(offDayMode, fallbackDocText) {
-      try {
-        const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&t=${new Date().getTime()}`);
-        const csvRawText = await response.text();
-        const parsedRows = parseCSV(csvRawText);
-        
-        const liveAnnouncement = parsedRows[1][2].trim();
-        const livePosterUrlString = parsedRows[1][6] ? parsedRows[1][6].trim() : '';
-        
-        document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
-        handlePosterArrayRendering(livePosterUrlString);
-        
-        if (!offDayMode) {
-          const liveDocAvail = parsedRows[1][3].trim();
-          const liveEmergency = parsedRows[1][4].trim();
-          document.getElementById('doctor-availability').innerText = liveDocAvail ? liveDocAvail : fallbackDocText;
-          updateEmergencyUI(liveEmergency, document.getElementById('emergency-container'), false);
-        }
-      } catch(e) {}
+      // Retained framework mapping loop for internal stability redundancy
     }
 
     evaluateClinicPipeline();
