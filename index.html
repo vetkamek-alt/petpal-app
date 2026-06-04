@@ -257,8 +257,8 @@
         // Populate Doctor Availability string
         doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Duty / Active";
 
-        // Update Emergency status panel
-        updateEmergencyUI(liveEmergency, emergencyContainer);
+        // Update Emergency status panel (Hidden when open unless explicitly "Available")
+        updateEmergencyUI(liveEmergency, emergencyContainer, false);
 
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
 
@@ -278,12 +278,9 @@
       `;
       doctorAvailability.innerText = docText;
       lastUpdatedElement.innerText = "";
-      emergencyContainer.innerHTML = `
-        <div class="flex items-center justify-between p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl">
-          <span class="text-sm font-medium flex items-center"><i class="fa-solid fa-ban text-gray-400 mr-2"></i> Emergency Services</span>
-          <span class="text-xs font-semibold bg-gray-300 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">Unavailable</span>
-        </div>
-      `;
+      
+      // Force display unavailable container text blocks only during complete layout closure frames
+      updateEmergencyUI("unavailable", emergencyContainer, true);
       
       // Dynamic shift: Changes text to guide customer to future appointment bookings instead of disabling
       const appointmentBtn = document.getElementById('appointment-btn');
@@ -295,7 +292,8 @@
       fetchBackupDataOnly(true, docText);
     }
 
-    function updateEmergencyUI(liveEmergency, emergencyContainer) {
+    // Controls emergency element presentation matrices
+    function updateEmergencyUI(liveEmergency, emergencyContainer, forceShowClosedState) {
       if (liveEmergency.toLowerCase() === 'available') {
         emergencyContainer.innerHTML = `
           <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 text-red-900 rounded-xl">
@@ -305,11 +303,17 @@
             <span class="text-xs font-extrabold bg-red-600 text-white px-2 py-1 rounded-md uppercase tracking-wider">Open & Ready</span>
           </div>`;
       } else {
-        emergencyContainer.innerHTML = `
-          <div class="flex items-center justify-between p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl">
-            <span class="text-sm font-medium flex items-center"><i class="fa-solid fa-ban text-gray-400 mr-2"></i> Emergency Services</span>
-            <span class="text-xs font-semibold bg-gray-300 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">Unavailable</span>
-          </div>`;
+        // If clinic is open and emergency tracking is set to unavailable, collapse element layout track completely
+        if (!forceShowClosedState) {
+          emergencyContainer.innerHTML = ""; 
+        } else {
+          // Keep layout block rendered exclusively for fixed calendar facility closure frames
+          emergencyContainer.innerHTML = `
+            <div class="flex items-center justify-between p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl">
+              <span class="text-sm font-medium flex items-center"><i class="fa-solid fa-ban text-gray-400 mr-2"></i> Emergency Services</span>
+              <span class="text-xs font-semibold bg-gray-300 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">Unavailable</span>
+            </div>`;
+        }
       }
     }
 
@@ -326,7 +330,7 @@
           const liveDocAvail = parsedRows[1][3].trim();
           const liveEmergency = parsedRows[1][4].trim();
           document.getElementById('doctor-availability').innerText = liveDocAvail ? liveDocAvail : fallbackDocText;
-          updateEmergencyUI(liveEmergency, document.getElementById('emergency-container'));
+          updateEmergencyUI(liveEmergency, document.getElementById('emergency-container'), false);
         }
       } catch(e) {}
     }
