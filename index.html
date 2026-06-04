@@ -4,14 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Petpal Clinic Portal</title>
+  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- FontAwesome Vector Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col justify-between text-gray-800">
 
+  <!-- Mobile-centric Application Frame -->
   <div class="max-w-md mx-auto w-full bg-white shadow-lg min-h-screen p-6 flex flex-col justify-between">
     
     <div>
+      <!-- 1. Petpal Logo -->
       <div class="text-center my-6">
         <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">
           <i class="fa-solid fa-paw mr-2"></i>Petpal
@@ -19,6 +23,7 @@
         <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Veterinary Clinic</p>
       </div>
 
+      <!-- 2. Today's Date & Real-time Automated Status Area -->
       <div class="bg-indigo-50 rounded-2xl p-4 mb-5 border border-indigo-100">
         <div class="flex justify-between items-start">
           <div>
@@ -26,6 +31,7 @@
             <p id="current-date" class="text-lg font-bold text-indigo-900">Loading date...</p>
           </div>
           
+          <!-- Live Status Output Badge -->
           <div class="text-right">
             <p class="text-xs uppercase text-indigo-400 font-semibold mb-1">Clinic Status</p>
             <div id="status-container">
@@ -33,11 +39,13 @@
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
             </div>
+            <!-- Last Updated Element Indicator -->
             <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
           </div>
         </div>
       </div>
 
+      <!-- 3. Doctor Availability Dynamic Area -->
       <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -52,15 +60,24 @@
         </div>
       </div>
 
+      <!-- 4. Dynamic Emergency Services Panel -->
       <div id="emergency-container" class="mb-5">
-        </div>
+        <!-- Managed dynamically via JavaScript -->
+      </div>
 
+      <!-- 📸 5. Dynamic Announcement Poster Area (Hidden by default) -->
+      <div id="poster-container" class="mb-5 hidden overflow-hidden rounded-2xl border border-gray-100 shadow-xs">
+        <img id="poster-img" src="" class="w-full h-auto object-cover" alt="Clinic Announcement Poster">
+      </div>
+
+      <!-- 6. Running Text Announcement Marquee -->
       <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 mb-5 overflow-hidden whitespace-nowrap">
         <div id="announcement-text" class="inline-block animate-marquee font-medium text-sm">
           Fetching live clinic announcements...
         </div>
       </div>
 
+      <!-- 7. 24/7 Active Book Appointment Button -->
       <div id="appointment-action-wrapper">
         <a id="appointment-btn" href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
            target="_blank" 
@@ -69,6 +86,7 @@
         </a>
       </div>
 
+      <!-- 8. Link to Monthly Calendar View -->
       <div class="text-center">
         <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">
           <i class="fa-regular fa-calendar-days mr-2"></i> View Monthly Doctor Roster
@@ -76,6 +94,7 @@
       </div>
     </div>
 
+    <!-- 9. Clinic Disclaimer -->
     <div class="mt-12 pt-4 border-t border-gray-100 text-center">
       <p class="text-xs text-gray-400 leading-relaxed">
         <strong>Disclaimer:</strong> Real-time status and doctor availability are subject to change due to emergency cases. For urgent life-threatening situations, please call our emergency hotline directly.
@@ -84,12 +103,14 @@
 
   </div>
 
+  <!-- Smooth Marquee Motion Styling -->
   <style>
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
     .animate-marquee:hover { animation-play-state: paused; }
   </style>
 
+  <!-- Application Automation Engine Script -->
   <script>
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
@@ -124,7 +145,7 @@
       const lastUpdatedElement = document.getElementById('last-updated');
       
       const now = new Date();
-      const currentDay = now.getDay(); // 0 = Sunday, 2 = Tuesday, 6 = Saturday
+      const currentDay = now.getDay(); 
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
       const totalMinutesToday = (currentHour * 60) + currentMinute;
@@ -152,7 +173,6 @@
         `;
         lastUpdatedElement.innerText = "";
         
-        // Let the appointment button shift context to advance booking during lunch
         const appointmentBtn = document.getElementById('appointment-btn');
         if (appointmentBtn) {
           appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20see%20you%20are%20currently%20having%20a%20lunch%20break,%20but%20I%20would%20like%20to%20leave%20a%20message%20to%20book%20an%20appointment%20for%20another%20available%20day.";
@@ -212,6 +232,7 @@
         const liveDocAvail = parsedRows[1][3].trim();
         const liveEmergency = parsedRows[1][4].trim();
         const liveLastUpdated = parsedRows[1][5] ? parsedRows[1][5].trim() : '';
+        const livePosterUrl = parsedRows[1][6] ? parsedRows[1][6].trim() : '';
 
         // Render Fluid Clinic Status Card based on tiers
         if (liveStatus.toLowerCase() === 'emergency priority') {
@@ -244,20 +265,17 @@
           `;
         }
 
-        // Reset booking button link to standard operational template
         const appointmentBtn = document.getElementById('appointment-btn');
         if (appointmentBtn) {
           appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet.";
           appointmentBtn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl mr-2 align-middle"></i>Book an Appointment`;
         }
 
-        // Inject Timestamp text tracking string
+        // Render Dynamic Announcement Poster
+        handlePosterRendering(livePosterUrl);
+
         lastUpdatedElement.innerText = liveLastUpdated ? `Updated: ${liveLastUpdated}` : "";
-
-        // Populate Doctor Availability string
         doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Duty / Active";
-
-        // Update Emergency status panel (Hidden when open unless explicitly "Available")
         updateEmergencyUI(liveEmergency, emergencyContainer, false);
 
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
@@ -268,7 +286,6 @@
       }
     }
 
-    // Extracted state engine to handle Closed UI structures (Keeps button active for future booking)
     function setClinicClosedUI(statusSubtext, docText, container, doctorAvailability, lastUpdatedElement, emergencyContainer) {
       container.innerHTML = `
         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300">
@@ -279,10 +296,8 @@
       doctorAvailability.innerText = docText;
       lastUpdatedElement.innerText = "";
       
-      // Force display unavailable container text blocks only during complete layout closure frames
       updateEmergencyUI("unavailable", emergencyContainer, true);
       
-      // Dynamic shift: Changes text to guide customer to future appointment bookings instead of disabling
       const appointmentBtn = document.getElementById('appointment-btn');
       if (appointmentBtn) {
         appointmentBtn.href = "https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20see%20the%20clinic%20is%20currently%20closed,%20but%20I%20would%20like%20to%20leave%20a%20message%20to%20book%20an%20appointment%20for%20another%20available%20day.";
@@ -292,7 +307,6 @@
       fetchBackupDataOnly(true, docText);
     }
 
-    // Controls emergency element presentation matrices
     function updateEmergencyUI(liveEmergency, emergencyContainer, forceShowClosedState) {
       if (liveEmergency.toLowerCase() === 'available') {
         emergencyContainer.innerHTML = `
@@ -303,17 +317,26 @@
             <span class="text-xs font-extrabold bg-red-600 text-white px-2 py-1 rounded-md uppercase tracking-wider">Open & Ready</span>
           </div>`;
       } else {
-        // If clinic is open and emergency tracking is set to unavailable, collapse element layout track completely
         if (!forceShowClosedState) {
           emergencyContainer.innerHTML = ""; 
         } else {
-          // Keep layout block rendered exclusively for fixed calendar facility closure frames
           emergencyContainer.innerHTML = `
             <div class="flex items-center justify-between p-3 bg-gray-100 border border-gray-200 text-gray-500 rounded-xl">
               <span class="text-sm font-medium flex items-center"><i class="fa-solid fa-ban text-gray-400 mr-2"></i> Emergency Services</span>
               <span class="text-xs font-semibold bg-gray-300 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">Unavailable</span>
             </div>`;
         }
+      }
+    }
+
+    function handlePosterRendering(imgUrl) {
+      const posterContainer = document.getElementById('poster-container');
+      const posterImg = document.getElementById('poster-img');
+      if (imgUrl && imgUrl.startsWith('http')) {
+        posterImg.src = imgUrl;
+        posterContainer.classList.remove('hidden');
+      } else {
+        posterContainer.classList.add('hidden');
       }
     }
 
@@ -324,7 +347,10 @@
         const parsedRows = parseCSV(csvRawText);
         
         const liveAnnouncement = parsedRows[1][2].trim();
+        const livePosterUrl = parsedRows[1][6] ? parsedRows[1][6].trim() : '';
+        
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
+        handlePosterRendering(livePosterUrl);
         
         if (!offDayMode) {
           const liveDocAvail = parsedRows[1][3].trim();
