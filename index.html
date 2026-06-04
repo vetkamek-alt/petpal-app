@@ -4,40 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Petpal Clinic Portal</title>
+  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- FontAwesome Vector Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col justify-between text-gray-800">
 
+  <!-- Mobile-centric Application Frame -->
   <div class="max-w-md mx-auto w-full bg-white shadow-lg min-h-screen p-6 flex flex-col justify-between">
     
     <div>
+      <!-- 1. Customized Petpal Logo & Branding Block -->
       <div class="text-center my-6">
-        <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">
-          <i class="fa-solid fa-paw mr-2"></i>Petpal
+        <!-- Verbatim link referencing your uploaded brand asset file -->
+        <img src="1000411353.png" alt="Petpal Animal Clinic Logo" class="h-28 mx-auto mb-3 object-contain">
+        <h1 class="text-3xl font-extrabold text-[#212C68] tracking-wide flex items-center justify-center">
+          Pet<span class="text-[#00CD52]">Pal</span>
         </h1>
-        <p class="text-xs text-gray-400 uppercase tracking-widest mt-1">Veterinary Clinic</p>
+        <p class="text-xs font-bold text-[#212C68] uppercase tracking-widest mt-1">Animal Clinic</p>
       </div>
 
-      <div class="bg-indigo-50 rounded-2xl p-4 mb-4 border border-indigo-100">
+      <!-- 2. Today's Date & Real-time Automated Status Area (Accented with Brand Navy Tint) -->
+      <div class="bg-[#212C68]/5 rounded-2xl p-4 mb-4 border border-[#212C68]/10">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-xs uppercase text-indigo-400 font-semibold">Today's Date</p>
-            <p id="current-date" class="text-lg font-bold text-indigo-900">Loading date...</p>
+            <p class="text-xs uppercase text-[#212C68]/60 font-semibold">Today's Date</p>
+            <p id="current-date" class="text-lg font-bold text-[#212C68]">Loading date...</p>
           </div>
           
+          <!-- Live Status Output Badge -->
           <div class="text-right">
-            <p class="text-xs uppercase text-indigo-400 font-semibold mb-1">Clinic Status</p>
+            <p class="text-xs uppercase text-[#212C68]/60 font-semibold mb-1">Clinic Status</p>
             <div id="status-container">
               <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-400">
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
             </div>
+            <!-- Last Updated Element Indicator -->
             <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
           </div>
         </div>
       </div>
 
+      <!-- 3. Dedicated Clinic Notice Card (Shows during unexpected events/closures) -->
       <div id="closure-notice-container" class="mb-4 hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-950">
         <div class="flex items-start space-x-3">
           <div class="text-amber-600 mt-0.5">
@@ -50,10 +60,11 @@
         </div>
       </div>
 
+      <!-- 4. Doctor Availability Dynamic Area (Accented with Brand Colors) -->
       <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
+            <div class="w-10 h-10 bg-[#212C68]/10 text-[#212C68] rounded-full flex items-center justify-center">
               <i class="fa-solid fa-user-doctor"></i>
             </div>
             <div>
@@ -64,20 +75,26 @@
         </div>
       </div>
 
+      <!-- 5. Dynamic Emergency Services Panel -->
       <div id="emergency-container" class="mb-5">
-        </div>
-
-      <div id="poster-container" class="mb-5 hidden">
-        <div id="carousel-wrapper" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
-          </div>
+        <!-- Managed dynamically via JavaScript -->
       </div>
 
+      <!-- 6. Dynamic swipeable Announcement Poster Slider Area -->
+      <div id="poster-container" class="mb-5 hidden">
+        <div id="carousel-wrapper" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
+          <!-- Dynamic Images injected here -->
+        </div>
+      </div>
+
+      <!-- 7. Running Text Announcement Marquee -->
       <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 mb-5 overflow-hidden whitespace-nowrap">
         <div id="announcement-text" class="inline-block animate-marquee font-medium text-sm">
           Fetching live clinic announcements...
         </div>
       </div>
 
+      <!-- 8. 24/7 Active Book Appointment Button -->
       <div id="appointment-action-wrapper">
         <a id="appointment-btn" href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
            target="_blank" 
@@ -86,6 +103,7 @@
         </a>
       </div>
 
+      <!-- 9. Autopilot Pet Fun Facts Module -->
       <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-5 text-purple-950">
         <h4 class="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center mb-1">
           <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-purple-600"></i> Did You Know?
@@ -93,13 +111,15 @@
         <p id="pet-fact-text" class="text-sm leading-relaxed font-medium">Loading a fun pet fact...</p>
       </div>
 
+      <!-- 10. Link to Monthly Calendar View -->
       <div class="text-center">
-        <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline">
+        <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-[#212C68] hover:text-[#00CD52] hover:underline transition duration-150">
           <i class="fa-regular fa-calendar-days mr-2"></i> View Monthly Doctor Roster
         </a>
       </div>
     </div>
 
+    <!-- 11. Clinic Disclaimer -->
     <div class="mt-12 pt-4 border-t border-gray-100 text-center">
       <p class="text-xs text-gray-400 leading-relaxed">
         <strong>Disclaimer:</strong> Real-time status and doctor availability are subject to change due to emergency cases. For urgent life-threatening situations, please call our emergency hotline directly.
@@ -108,6 +128,7 @@
 
   </div>
 
+  <!-- Smooth Motion Styles -->
   <style>
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
@@ -116,6 +137,7 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 
+  <!-- Application Automation Engine Script -->
   <script>
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
@@ -231,7 +253,6 @@
           return;
         }
 
-        // Hide notice block entirely if no custom system or off-day rule overrides exist
         closureNoticeContainer.classList.add('hidden');
 
         // 🕒 AUTOMATED OVERRIDE: DAILY LUNCH BREAK CLOCK (1:00 PM - 2:30 PM)
@@ -314,7 +335,6 @@
       }
     }
 
-    // Modernized UI state split handling parameters
     function setClinicClosedUI(statusSubtext, noticeMessage, container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer) {
       container.innerHTML = `
         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 border border-gray-300">
@@ -323,11 +343,7 @@
         <p class="text-xs text-gray-500 mt-1 font-semibold">${statusSubtext}</p>
       `;
       
-      // 🤝 THE SEPARATION FIX: 
-      // Doctor status layout remains standard and isolated...
       doctorAvailability.innerText = "No doctor on duty (Clinic Closed)";
-      
-      // ...While the explanation data string gets injected into its own dedicated banner component
       document.getElementById('closure-notice-text').innerText = noticeMessage;
       closureNoticeContainer.classList.remove('hidden');
 
