@@ -142,7 +142,10 @@
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
-    const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSLnd2OK3OrSVmRuFeD2bbItXkODt4ed49NHDWt0hc5gI_ubC_uFvGbZHe5qisH12mkwInYH5FJf90F/pub?output=csv';
+    // ⚡ INSTANT LIVE REFRESH CONFIGURATION
+    // Replace the text inside the single quotes below with your real Google Spreadsheet ID string
+    const SPREADSHEET_ID = '1bNWT8Vw_UOOYX-zv5o7NZTrMsEg3KzpTDgQVZA-ESl4';
+    const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv`;
 
     const petFactsCollection = [
       "A dog's sense of smell is up to 100,000 times more sensitive than a human's!",
@@ -231,9 +234,6 @@
         return;
       }
 
-      // ==========================================
-      // LIVE DATA STREAM FETCH
-      // ==========================================
       try {
         const response = await fetch(`${GOOGLE_SHEET_CSV_URL}&t=${new Date().getTime()}`);
         const csvRawText = await response.text();
@@ -296,12 +296,12 @@
         let isOutsideHours = false;
         let nextOpenTime = "";
 
-        if (currentDay === 6) { // Saturday
+        if (currentDay === 6) { 
           const satOpenMorning = 11 * 60;       
           const satCloseEvening = (17 * 60) + 30; 
           if (totalMinutesToday < satOpenMorning) { isOutsideHours = true; nextOpenTime = "Clinic opens at 11:00 AM today."; }
           else if (totalMinutesToday >= satCloseEvening) { isOutsideHours = true; nextOpenTime = "Clinic is closed for the day."; }
-        } else { // Mon, Wed, Thu, Fri
+        } else { 
           const weekdayOpenMorning = (10 * 60) + 30; 
           const weekdayCloseEvening = 18 * 60;       
           if (totalMinutesToday < weekdayOpenMorning) { isOutsideHours = true; nextOpenTime = "Clinic opens at 10:30 AM today."; }
@@ -313,10 +313,6 @@
           return;
         }
 
-        // ==========================================
-        // STANDARD ONLINE DISPLAY & OVERRIDE INGESTION
-        // ==========================================
-        
         // Render Clinic Volume Badge
         if (liveStatus.toLowerCase() === 'emergency priority') {
           container.innerHTML = `
@@ -354,15 +350,12 @@
           walkinIcon.className = "fa-solid fa-circle-check text-lg";
           walkinStatusText.innerText = "Open (Appointments Prioritized)";
           setWhatsAppButtonState('open');
-          
         } else if (liveWalkInOverride === 'closed') {
           walkinIconBg.className = "w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center";
           walkinIcon.className = "fa-solid fa-triangle-exclamation text-lg";
           walkinStatusText.innerText = "Fully Booked (Appointments Only)";
           setWhatsAppButtonState('full');
-          
         } else {
-          // Autopilot Mode: Fall back to 4-tier traffic logic if column J is empty
           if (liveStatus.toLowerCase() === 'emergency priority') {
             walkinIconBg.className = "w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center animate-pulse";
             walkinIcon.className = "fa-solid fa-ban text-lg";
