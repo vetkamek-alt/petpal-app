@@ -4,18 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Petpal Clinic Portal</title>
-  <!-- Tailwind CSS Framework -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <!-- FontAwesome Vector Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col justify-between text-gray-800">
 
-  <!-- Mobile-centric Application Frame -->
   <div class="max-w-md mx-auto w-full bg-white shadow-lg min-h-screen p-6 flex flex-col justify-between">
     
     <div>
-      <!-- 1. Customized Petpal Logo & Branding Block -->
       <div class="text-center my-6">
         <img src="Petpal-02 (1).png" alt="Petpal Animal Clinic Logo" class="h-28 mx-auto mb-3 object-contain">
         <h1 class="text-3xl font-extrabold text-[#212C68] tracking-wide flex items-center justify-center">
@@ -24,7 +20,6 @@
         <p class="text-xs font-bold text-[#212C68] uppercase tracking-widest mt-1">Animal Clinic</p>
       </div>
 
-      <!-- 2. Today's Date & Real-time Automated Status Area -->
       <div class="bg-[#212C68]/5 rounded-2xl p-4 mb-4 border border-[#212C68]/10">
         <div class="flex justify-between items-center">
           <div>
@@ -32,20 +27,17 @@
             <p id="current-date" class="text-lg font-bold text-[#212C68]">Loading date...</p>
           </div>
           
-          <!-- Live Status Output Badge Block -->
           <div class="text-right">
             <div id="status-container" class="flex flex-col items-end">
               <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-400">
                 <i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-xs"></i>Checking...
               </span>
             </div>
-            <!-- Last Updated Element Indicator -->
             <p id="last-updated" class="text-[10px] text-gray-400 mt-1 italic"></p>
           </div>
         </div>
       </div>
 
-      <!-- 3. Separated Walk-In Availability Status Card -->
       <div id="walkin-card" class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -60,7 +52,6 @@
         </div>
       </div>
 
-      <!-- 4. Dedicated Clinic Notice Card (Shows during unexpected events/closures) -->
       <div id="closure-notice-container" class="mb-4 hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-950">
         <div class="flex items-start space-x-3">
           <div class="text-amber-600 mt-0.5">
@@ -73,7 +64,6 @@
         </div>
       </div>
 
-      <!-- 5. Doctor Availability Dynamic Area -->
       <div class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -88,26 +78,20 @@
         </div>
       </div>
 
-      <!-- 6. Dynamic Emergency Services Panel -->
       <div id="emergency-container" class="mb-5">
-        <!-- Managed dynamically via JavaScript -->
-      </div>
+        </div>
 
-      <!-- 7. Dynamic swipeable Announcement Poster Slider Area -->
       <div id="poster-container" class="mb-5 hidden">
         <div id="carousel-wrapper" class="flex overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
-          <!-- Dynamic Images injected here -->
-        </div>
+          </div>
       </div>
 
-      <!-- 8. Running Text Announcement Marquee -->
       <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 mb-5 overflow-hidden whitespace-nowrap">
         <div id="announcement-text" class="inline-block animate-marquee font-medium text-sm">
           Fetching live clinic announcements...
         </div>
       </div>
 
-      <!-- 9. 24/7 Active Book Appointment Button -->
       <div id="appointment-action-wrapper">
         <a id="appointment-btn" href="https://wa.me/1234567890?text=Hello%20Petpal%20Clinic!%20I%20would%20like%20to%20check%20availability%20and%20book%20an%20appointment%20for%20my%20pet." 
            target="_blank" 
@@ -116,7 +100,6 @@
         </a>
       </div>
 
-      <!-- 10. Branded Price Checker Quick Link Button -->
       <div class="mb-5">
         <a href="https://price-checker-rho.vercel.app/" 
            target="_blank" 
@@ -125,7 +108,6 @@
         </a>
       </div>
 
-      <!-- 11. Autopilot Pet Fun Facts Module -->
       <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-5 text-purple-950">
         <h4 class="text-xs font-bold text-purple-500 uppercase tracking-wider flex items-center mb-1">
           <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-purple-600"></i> Did You Know?
@@ -133,7 +115,6 @@
         <p id="pet-fact-text" class="text-sm leading-relaxed font-medium">Loading a fun pet fact...</p>
       </div>
 
-      <!-- 12. Link to Monthly Calendar View -->
       <div class="text-center">
         <a href="calendar.html" class="inline-flex items-center text-sm font-semibold text-[#212C68] hover:text-[#00CD52] hover:underline transition duration-150">
           <i class="fa-regular fa-calendar-days mr-2"></i> View Monthly Doctor Roster
@@ -141,7 +122,6 @@
       </div>
     </div>
 
-    <!-- 13. Permanent Appointment Priority Policy Disclaimer -->
     <div class="mt-12 pt-4 border-t border-gray-100 text-center">
       <p class="text-xs text-gray-400 leading-relaxed">
         <strong>Notice:</strong> Petpal Animal Clinic operates primarily on an <strong>appointment basis</strong>. Confirmed appointments are prioritized. Walk-ins are accepted strictly subject to schedule slot openings. Emergency cases always receive immediate priority.
@@ -150,7 +130,6 @@
 
   </div>
 
-  <!-- Smooth Motion Styles -->
   <style>
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; animation: marquee 18s linear infinite; }
@@ -159,7 +138,6 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 
-  <!-- Application Automation Engine Script -->
   <script>
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
@@ -270,11 +248,12 @@
         const livePosterUrlString = parsedRows[1][6] ? parsedRows[1][6].trim() : '';
         const liveHolidayClosure = parsedRows[1][7] ? parsedRows[1][7].trim() : '';
         const liveEarlyCloseTime = parsedRows[1][8] ? parsedRows[1][8].trim() : '';
+        const liveWalkInOverride = parsedRows[1][9] ? parsedRows[1][9].trim().toLowerCase() : '';
 
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
         handlePosterArrayRendering(livePosterUrlString);
 
-        // 🛑 MANUAL OVERRIDE: IMEDTIATE HOLIDAY CLOSURE TRIGGER SWITCH
+        // 🛑 MANUAL OVERRIDE: IMMEDIATE HOLIDAY CLOSURE TRIGGER SWITCH
         if (liveHolidayClosure !== "" && liveEarlyCloseTime === "") {
           setClinicClosedUI("Clinic Notice", liveHolidayClosure, container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer);
           return;
@@ -335,8 +314,10 @@
         }
 
         // ==========================================
-        // STANDARD ONLINE DISPLAY (Separated Layout Mode)
+        // STANDARD ONLINE DISPLAY & OVERRIDE INGESTION
         // ==========================================
+        
+        // Render Clinic Volume Badge
         if (liveStatus.toLowerCase() === 'emergency priority') {
           container.innerHTML = `
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-600 text-white animate-pulse">
@@ -344,10 +325,6 @@
             </span>
             <p class="text-[11px] text-red-600 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
-          walkinIconBg.className = "w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center animate-pulse";
-          walkinIcon.className = "fa-solid fa-ban text-lg";
-          walkinStatusText.innerText = "Suspended (Emergencies Only)";
-          
         } else if (liveStatus.toLowerCase() === 'peak volume') {
           container.innerHTML = `
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-500 text-white">
@@ -355,10 +332,6 @@
             </span>
             <p class="text-[11px] text-amber-600 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
-          walkinIconBg.className = "w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center";
-          walkinIcon.className = "fa-solid fa-triangle-exclamation text-lg";
-          walkinStatusText.innerText = "Fully Booked (Appointments Only)";
-          
         } else if (liveStatus.toLowerCase() === 'moderate') {
           container.innerHTML = `
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
@@ -366,31 +339,56 @@
             </span>
             <p class="text-[11px] text-yellow-700 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
-          walkinIconBg.className = "w-10 h-10 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center";
-          walkinIcon.className = "fa-solid fa-circle-info text-lg";
-          walkinStatusText.innerText = "Limited Slots (Appointments Prioritized)";
-          
-        } else { // Available
+        } else { 
           container.innerHTML = `
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
               <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>Available
             </span>
             <p class="text-[11px] text-green-600 font-bold tracking-tight mt-1">${liveWaitTime}</p>
           `;
+        }
+
+        // 🎛️ MANAGE WALK-IN CARD DATA (Checks Manual Override Column First)
+        if (liveWalkInOverride === 'open') {
           walkinIconBg.className = "w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center";
           walkinIcon.className = "fa-solid fa-circle-check text-lg";
           walkinStatusText.innerText = "Open (Appointments Prioritized)";
+          setWhatsAppButtonState('open');
+          
+        } else if (liveWalkInOverride === 'closed') {
+          walkinIconBg.className = "w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center";
+          walkinIcon.className = "fa-solid fa-triangle-exclamation text-lg";
+          walkinStatusText.innerText = "Fully Booked (Appointments Only)";
+          setWhatsAppButtonState('full');
+          
+        } else {
+          // Autopilot Mode: Fall back to 4-tier traffic logic if column J is empty
+          if (liveStatus.toLowerCase() === 'emergency priority') {
+            walkinIconBg.className = "w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center animate-pulse";
+            walkinIcon.className = "fa-solid fa-ban text-lg";
+            walkinStatusText.innerText = "Suspended (Emergencies Only)";
+            setWhatsAppButtonState('open');
+          } else if (liveStatus.toLowerCase() === 'peak volume') {
+            walkinIconBg.className = "w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center";
+            walkinIcon.className = "fa-solid fa-triangle-exclamation text-lg";
+            walkinStatusText.innerText = "Fully Booked (Appointments Only)";
+            setWhatsAppButtonState('full');
+          } else if (liveStatus.toLowerCase() === 'moderate') {
+            walkinIconBg.className = "w-10 h-10 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center";
+            walkinIcon.className = "fa-solid fa-circle-info text-lg";
+            walkinStatusText.innerText = "Limited Slots (Appointments Prioritized)";
+            setWhatsAppButtonState('open');
+          } else { 
+            walkinIconBg.className = "w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center";
+            walkinIcon.className = "fa-solid fa-circle-check text-lg";
+            walkinStatusText.innerText = "Open (Appointments Prioritized)";
+            setWhatsAppButtonState('open');
+          }
         }
 
         lastUpdatedElement.innerText = liveLastUpdated ? `Updated: ${liveLastUpdated}` : "";
         doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Duty / Active";
         updateEmergencyUI(liveEmergency, emergencyContainer, false);
-        
-        if (liveStatus.toLowerCase() === 'peak volume') {
-          setWhatsAppButtonState('full');
-        } else {
-          setWhatsAppButtonState('open');
-        }
 
       } catch (err) {
         console.error('Data Ingestion Exception Error:', err);
