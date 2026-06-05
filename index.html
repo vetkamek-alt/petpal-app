@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <!-- 🚶‍♂️ 3. NEW: Completely Separated Walk-In Availability Status Card -->
+      <!-- 3. Separated Walk-In Availability Status Card -->
       <div id="walkin-card" class="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -269,14 +269,27 @@
         const liveLastUpdated = parsedRows[1][5] ? parsedRows[1][5].trim() : '';
         const livePosterUrlString = parsedRows[1][6] ? parsedRows[1][6].trim() : '';
         const liveHolidayClosure = parsedRows[1][7] ? parsedRows[1][7].trim() : '';
+        const liveEarlyCloseTime = parsedRows[1][8] ? parsedRows[1][8].trim() : '';
 
         document.getElementById('announcement-text').innerHTML = `🚨 <strong>Announcement:</strong> ${liveAnnouncement}`;
         handlePosterArrayRendering(livePosterUrlString);
 
-        // 🛑 MANUAL OVERRIDE: HOLIDAY & EARLY CLOSURE TRIGGER SWITCH
-        if (liveHolidayClosure !== "") {
+        // 🛑 MANUAL OVERRIDE: IMEDTIATE HOLIDAY CLOSURE TRIGGER SWITCH
+        if (liveHolidayClosure !== "" && liveEarlyCloseTime === "") {
           setClinicClosedUI("Clinic Notice", liveHolidayClosure, container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer);
           return;
+        }
+
+        // 🕒 AUTOMATED OVERRIDE: SCHEDULED EARLY CLOSURE TRIGGER CLOCK
+        if (liveEarlyCloseTime !== "" && liveEarlyCloseTime.includes(':')) {
+          const [eHour, eMinute] = liveEarlyCloseTime.split(':').map(Number);
+          const earlyCloseMinutes = (eHour * 60) + eMinute;
+          
+          if (totalMinutesToday >= earlyCloseMinutes) {
+            const fallbackReason = `The clinic closed early today at ${liveEarlyCloseTime}. We look forward to serving your pets during our next regular operating session.`;
+            setClinicClosedUI("Clinic Notice", liveHolidayClosure !== "" ? liveHolidayClosure : fallbackReason, container, doctorAvailability, lastUpdatedElement, emergencyContainer, closureNoticeContainer);
+            return;
+          }
         }
 
         closureNoticeContainer.classList.add('hidden');
@@ -291,7 +304,6 @@
           lastUpdatedElement.innerText = "";
           doctorAvailability.innerText = liveDocAvail ? liveDocAvail : "On Lunch Break (1:00 PM - 2:30 PM)";
           
-          // Separate Walk-In card output parameters
           walkinIconBg.className = "w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center";
           walkinIcon.className = "fa-solid fa-utensils text-lg";
           walkinStatusText.innerText = "Closed (Resuming at 2:30 PM)";
@@ -395,7 +407,6 @@
       
       doctorAvailability.innerText = "No doctor on duty (Clinic Closed)";
       
-      // Clear and grey-out the standalone Walk-In status tracking nodes
       const walkinIconBg = document.getElementById('walkin-icon-bg');
       const walkinIcon = document.getElementById('walkin-icon');
       const walkinStatusText = document.getElementById('walkin-status-text');
